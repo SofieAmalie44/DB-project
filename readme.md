@@ -180,6 +180,56 @@ CRUD operations, foreign keys, and M2M relations are exposed through REST API en
 
     * IsAdminOrReadOnly
 
+-------
+
+## Swagger / API Documentation
+
+The project includes complete interactive documentation via Swagger UI using drf-yasg.
+
+### Access Swagger
+
+Start Django and visit:
+```arduino
+http://127.0.0.1:8000/swagger/
+```
+
+or:
+```arduino
+http://127.0.0.1:8000/redoc/
+```
+
+### Authentication in Swagger
+
+Swagger supports:
+
+* Token Authentication
+```makefile
+Authorization: Token <token>
+```
+
+* JWT Authentication
+```makefile
+Authorization: Bearer <access_token>
+```
+
+Use the Authorize button to authenticate and interact with protected endpoints.
+
+### What Swagger Shows
+
+* All API endpoints
+
+* Request/response schemas
+
+* Field descriptions
+
+* * Authentication requirements
+
+Models & relationships
+
+* Try-it-out console
+
+-------
+
 ### API Documentation
 
 * Swagger / drf-yasg:
@@ -349,6 +399,55 @@ Collections:
 * quest
 * character
 * battle
+* transaction
+
+-------
+
+## Running MongoDB via Docker (Required)
+
+Start MongoDB:
+```bash
+docker run -d \
+  --name mongodb \
+  -p 27017:27017 \
+  -v mongo-data:/data/db \
+  mongo:6.0
+```
+
+Inspect:
+```bash
+docker ps
+```
+
+Stop/start:
+```bash
+docker stop mongodb
+docker start mongodb
+```
+
+### Run the Migrator
+```bash
+python manage.py migrate_to_mongo
+```
+
+MongoDB will now contain:
+
+* character
+
+* item
+
+* inventory
+
+* quest
+
+* npc
+
+* guild
+
+* skill
+
+* battle
+
 * transaction
 
 -------
