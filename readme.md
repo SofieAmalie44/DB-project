@@ -3,6 +3,7 @@
 <p align="center"> <img src="https://img.shields.io/badge/Python-3.12-blue?logo=python" /> <img src="https://img.shields.io/badge/Django-5.0-green?logo=django" /> <img src="https://img.shields.io/badge/REST%20API-DRF-red?logo=django" /> <img src="https://img.shields.io/badge/MySQL-Database-blue?logo=mysql" /> <img src="https://img.shields.io/badge/MongoDB-NoSQL-success?logo=mongodb" /> <img src="https://img.shields.io/badge/Docker-Enabled-2496ED?logo=docker" /> </p>
 
 Created by: Sofie Thorlund and Viktor Bach
+
 Course: Databases for Developers
 
 ## Overview
