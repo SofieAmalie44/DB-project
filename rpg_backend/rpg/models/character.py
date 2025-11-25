@@ -11,13 +11,13 @@ from .skill import Skill
 # =============================
 class Character(models.Model):
     character_name = models.CharField(max_length=100, unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     level = models.IntegerField(default=1)
     hp = models.IntegerField(default=100)
     mana = models.IntegerField(default=50)
     xp = models.IntegerField(default=0)
     gold = models.IntegerField(default=0)
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     guild = models.ForeignKey(Guild, on_delete=models.SET_NULL, null=True)
 
     skills = models.ManyToManyField(Skill, blank=True)
