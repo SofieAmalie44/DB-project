@@ -12,3 +12,5 @@ dnspython>=2.4
 
 django-filter>=23.5
 PyJWT>=2.8
+neo4j>=5.10
+python-dotenv>=1.0
