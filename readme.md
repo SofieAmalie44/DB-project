@@ -499,7 +499,7 @@ docker run -d --name mongodb -p 27017:27017 -v mongo-data:/data/db mongo:6.0
 python manage.py runserver
 ```
 
-7. Run Migrator (optional)
+7. Run Migrator 
 ```bash
 python manage.py migrate_to_mongo
 ```

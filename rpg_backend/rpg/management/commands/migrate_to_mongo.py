@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from pymongo import MongoClient
 from django.apps import apps
 from django.db.models.fields.related import ManyToManyField
+from django.contrib.auth.models import User
 
 
 class Command(BaseCommand):
@@ -75,5 +76,34 @@ class Command(BaseCommand):
             self.stdout.write(
                 self.style.SUCCESS(f"✔ {len(documents)} rows migrated from {model_name}")
             )
+
+
+        # -------------------------------------
+        # MIGRATE USER TABLE INTO MONGODB
+        # -------------------------------------
+
+        self.stdout.write("Migrating: user ...")
+        user_collection = db["user"]
+        user_collection.delete_many({})
+
+        users = User.objects.all()
+        docs = []
+
+        for u in users:
+            docs.append({
+                "id": u.id,
+                "username": u.username,
+                "email": u.email,
+                "first_name": u.first_name,
+                "last_name": u.last_name,
+                "is_staff": u.is_staff,
+                "is_superuser": u.is_superuser,
+                "date_joined": u.date_joined.isoformat(),
+                "last_login": u.last_login.isoformat() if u.last_login else None
+            })
+        if docs:
+            user_collection.insert_many(docs)
+
+        self.stdout.write(self.style.SUCCESS(f" {len(docs)} rows migrated from user"))
 
         self.stdout.write(self.style.SUCCESS("\n Migration completed successfully!"))

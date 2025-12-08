@@ -5,20 +5,16 @@ from django.db import models
 # =============================
 # INVENTORY
 # =============================
+
 class Inventory(models.Model):
     character = models.ForeignKey(
         "rpg.Character",
         on_delete=models.CASCADE,
-        related_name="inventories"
+        related_name="inventory"
     )
-    item = models.ForeignKey(
-        "rpg.Item",
-        on_delete=models.CASCADE,
-        related_name="inventories"
-    )
-    quantity = models.IntegerField(default=1)
 
     def __str__(self):
-        return f"{self.character.name} owns {self.quantity} × {self.item.name}"
+        return f"Inventory of {self.character.name}"
+
 
 
