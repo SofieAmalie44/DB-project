@@ -345,6 +345,130 @@ All endpoints require authentication unless read-only.
 
 -----
 
+## Neo4j Graph Database API
+
+The project includes a complete CRUD API for the Neo4j graph database, matching the MongoDB implementation pattern.
+
+### Neo4j API Endpoints
+
+All Neo4j endpoints follow the pattern: `/api/neo4j/{resource}/`
+
+#### Characters
+```bash
+GET     /api/neo4j/characters/
+POST    /api/neo4j/characters/
+GET     /api/neo4j/characters/{id}/
+PUT     /api/neo4j/characters/{id}/
+DELETE  /api/neo4j/characters/{id}/
+```
+
+#### Items
+```bash
+GET     /api/neo4j/items/
+POST    /api/neo4j/items/
+GET     /api/neo4j/items/{id}/
+PUT     /api/neo4j/items/{id}/
+DELETE  /api/neo4j/items/{id}/
+```
+
+#### Skills
+```bash
+GET     /api/neo4j/skills/
+POST    /api/neo4j/skills/
+GET     /api/neo4j/skills/{id}/
+PUT     /api/neo4j/skills/{id}/
+DELETE  /api/neo4j/skills/{id}/
+```
+
+#### Quests
+```bash
+GET     /api/neo4j/quests/
+POST    /api/neo4j/quests/
+GET     /api/neo4j/quests/{id}/
+PUT     /api/neo4j/quests/{id}/
+DELETE  /api/neo4j/quests/{id}/
+```
+
+#### Guilds
+```bash
+GET     /api/neo4j/guilds/
+POST    /api/neo4j/guilds/
+GET     /api/neo4j/guilds/{id}/
+PUT     /api/neo4j/guilds/{id}/
+DELETE  /api/neo4j/guilds/{id}/
+```
+
+#### NPCs
+```bash
+GET     /api/neo4j/npcs/
+POST    /api/neo4j/npcs/
+GET     /api/neo4j/npcs/{id}/
+PUT     /api/neo4j/npcs/{id}/
+DELETE  /api/neo4j/npcs/{id}/
+```
+
+#### Battles
+```bash
+GET     /api/neo4j/battles/
+POST    /api/neo4j/battles/
+GET     /api/neo4j/battles/{id}/
+PUT     /api/neo4j/battles/{id}/
+DELETE  /api/neo4j/battles/{id}/
+```
+
+#### Transactions
+```bash
+GET     /api/neo4j/transactions/
+POST    /api/neo4j/transactions/
+GET     /api/neo4j/transactions/{id}/
+PUT     /api/neo4j/transactions/{id}/
+DELETE  /api/neo4j/transactions/{id}/
+```
+
+#### Users
+```bash
+GET     /api/neo4j/users/
+GET     /api/neo4j/users/{id}/
+```
+
+### Neo4j API Features
+
+* **Graph relationships**: GET requests include related data (e.g., characters return their user, guild, skills, quests)
+* **Cypher queries**: All operations use optimized Cypher queries
+* **Automatic ID generation**: POST requests auto-increment IDs
+* **Relationship management**: Creating entities automatically creates relationships if foreign keys are provided
+* **No authentication required**: All endpoints are public (matching MongoDB implementation)
+
+### Example Usage
+
+Get all characters with relationships:
+```bash
+curl http://localhost:8000/api/neo4j/characters/
+```
+
+Create a new character:
+```bash
+curl -X POST http://localhost:8000/api/neo4j/characters/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "character_name": "Thorin",
+    "level": 10,
+    "hp": 200,
+    "mana": 100,
+    "user_id": 1,
+    "guild_id": 2
+  }'
+```
+
+Update a character:
+```bash
+curl -X PUT http://localhost:8000/api/neo4j/characters/1/ \
+  -H "Content-Type: application/json" \
+  -d '{"level": 15, "hp": 250}'
+```
+
+-----
+
 ## SQL → MongoDB Migration Tool
 
 As required in Assignment 2, we created a migrator app using a Django management command.

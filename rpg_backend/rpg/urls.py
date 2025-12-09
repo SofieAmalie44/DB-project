@@ -27,6 +27,17 @@ from .mongo_views.transaction_view import MongoTransactionList, MongoTransaction
 from .mongo_views.battle_view import MongoBattleList, MongoBattleDetail
 from .mongo_views.user_view import MongoUserList, MongoUserDetail, MongoUserFilter
 
+# Import Neo4j Views
+from .neo4j_views.character_view import CharacterNeo4jView
+from .neo4j_views.item_view import ItemNeo4jView
+from .neo4j_views.skill_view import SkillNeo4jView
+from .neo4j_views.quest_view import QuestNeo4jView
+from .neo4j_views.guild_view import GuildNeo4jView
+from .neo4j_views.npc_view import NPCNeo4jView
+from .neo4j_views.battle_view import BattleNeo4jView
+from .neo4j_views.transaction_view import TransactionNeo4jView
+from .neo4j_views.user_view import UserNeo4jView
+
 
 
 router = routers.DefaultRouter()
@@ -87,5 +98,33 @@ urlpatterns = [
     path("mongodb/users/", MongoUserList.as_view(), name="mongo-user-list"),
     path("mongodb/users/<int:user_id>/", MongoUserDetail.as_view(), name="mongo-user-detail"),
     path("mongodb/users/filter/", MongoUserFilter.as_view(), name="mongo-user-filter"),
+
+    # Neo4j CRUD endpoints
+    path("neo4j/characters/", CharacterNeo4jView.as_view(), name="neo4j-character-list"),
+    path("neo4j/characters/<int:char_id>/", CharacterNeo4jView.as_view(), name="neo4j-character-detail"),
+
+    path("neo4j/items/", ItemNeo4jView.as_view(), name="neo4j-item-list"),
+    path("neo4j/items/<int:item_id>/", ItemNeo4jView.as_view(), name="neo4j-item-detail"),
+
+    path("neo4j/skills/", SkillNeo4jView.as_view(), name="neo4j-skill-list"),
+    path("neo4j/skills/<int:skill_id>/", SkillNeo4jView.as_view(), name="neo4j-skill-detail"),
+
+    path("neo4j/quests/", QuestNeo4jView.as_view(), name="neo4j-quest-list"),
+    path("neo4j/quests/<int:quest_id>/", QuestNeo4jView.as_view(), name="neo4j-quest-detail"),
+
+    path("neo4j/guilds/", GuildNeo4jView.as_view(), name="neo4j-guild-list"),
+    path("neo4j/guilds/<int:guild_id>/", GuildNeo4jView.as_view(), name="neo4j-guild-detail"),
+
+    path("neo4j/npcs/", NPCNeo4jView.as_view(), name="neo4j-npc-list"),
+    path("neo4j/npcs/<int:npc_id>/", NPCNeo4jView.as_view(), name="neo4j-npc-detail"),
+
+    path("neo4j/battles/", BattleNeo4jView.as_view(), name="neo4j-battle-list"),
+    path("neo4j/battles/<int:battle_id>/", BattleNeo4jView.as_view(), name="neo4j-battle-detail"),
+
+    path("neo4j/transactions/", TransactionNeo4jView.as_view(), name="neo4j-transaction-list"),
+    path("neo4j/transactions/<int:transaction_id>/", TransactionNeo4jView.as_view(), name="neo4j-transaction-detail"),
+
+    path("neo4j/users/", UserNeo4jView.as_view(), name="neo4j-user-list"),
+    path("neo4j/users/<int:user_id>/", UserNeo4jView.as_view(), name="neo4j-user-detail"),
 
 ]
