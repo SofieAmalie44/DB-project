@@ -1,30 +1,42 @@
+USE rpgdb;
 
--- USERS
-INSERT INTO user (username, email, password)
+-- USERS (auth_user)
+INSERT INTO auth_user (
+    password,
+    last_login,
+    is_superuser,
+    username,
+    first_name,
+    last_name,
+    email,
+    is_staff,
+    is_active,
+    date_joined
+)
 VALUES
-('Viktor', 'viktor@example.com', 'pass123'),
-('Luna', 'luna@example.com', 'moonlight'),
-('Thorin', 'thorin@example.com', 'oakenshield');
+('!', NULL, 0, 'Viktor', '', '', 'viktor@example.com', 0, 1, NOW()),
+('!', NULL, 0, 'Luna', '', '', 'moonlight@example.com', 0, 1, NOW()),
+('!', NULL, 0, 'Thorin', '', '', 'thorin@example.com', 0, 1, NOW());
 
 -- GUILDS
-INSERT INTO guild (guild_name, members)
+INSERT INTO rpg_guild (guild_name, members)
 VALUES
 ('Knights of Dawn', '10'),
 ('Shadow Blades', '8'),
 ('Mages Circle', '12');
 
 -- INVENTORIES
-INSERT INTO inventory VALUES (), (), ();
+INSERT INTO rpg_inventory VALUES (), (), ();
 
 -- CHARACTERS
-INSERT INTO `character` (character_name, level, hp, mana, user_id, inventory_id, guild_id)
+INSERT INTO rpg_character (character_name, level, hp, mana, user_id, guild_id, xp, gold)
 VALUES
-('Aelric', 10, 200, 100, 1, 1, 1),
-('Lyra', 8, 150, 180, 2, 2, 3),
-('Grimnar', 12, 300, 50, 3, 3, 2);
+('Aelric', 10, 200, 100, 1, 1, 0, 0),
+('Lyra', 8, 150, 180, 2, 3, 0, 0),
+('Grimnar', 12, 300, 50, 3, 2, 0, 0);
 
 -- ITEMS
-INSERT INTO item (name, type, rarity, value, stats)
+INSERT INTO rpg_item (name, type, rarity, value, stats)
 VALUES
 ('Iron Sword', 'Weapon', 'Common', '50', '+10 ATK'),
 ('Healing Potion', 'Consumable', 'Common', '10', '+50 HP'),
@@ -32,66 +44,51 @@ VALUES
 ('Steel Shield', 'Armor', 'Rare', '100', '+15 DEF'),
 ('Ring of Power', 'Accessory', 'Epic', '250', '+25 ATK +25 Mana');
 
--- INVENTORY_HAS_ITEM
-INSERT INTO inventory_has_item (inventory_id, item_id)
-VALUES
-(1, 1),
-(1, 2),
-(2, 3),
-(3, 4),
-(3, 5);
 
 -- NPCs
-INSERT INTO npc (name, role, location)
+INSERT INTO rpg_npc (name, role, location)
 VALUES
 ('Elder Rowan', 'Quest Giver', 'Oakvale'),
 ('Merchant Tilda', 'Vendor', 'Ironforge'),
 ('Captain Duran', 'Quest Giver', 'Stormkeep');
 
 -- QUESTS
-INSERT INTO quest (title, reward_money, reward_xp, description, npc_id)
+INSERT INTO rpg_quest (title, reward_money, reward_xp, description, npc_id, status)
 VALUES
-('Defeat the Goblins', '100', 300, 'Clear the forest of goblins', 1),
-('Deliver the Package', '50', 150, 'Take supplies to Ironforge', 3),
-('Find the Lost Tome', '200', 400, 'Recover the ancient tome from ruins', 1);
+('Defeat the Goblins', '100', 300, 'Clear the forest of goblins', 1, 'Available'),
+('Deliver the Package', '50', 150, 'Take supplies to Ironforge', 3, 'Available'),
+('Find the Lost Tome', '200', 400, 'Recover the ancient tome from ruins', 1, 'Available');
 
 -- SKILLS
-INSERT INTO skills (name, description, damage, healing)
+INSERT INTO rpg_skill (name, description, damage, healing)
 VALUES
 ('Fireball', 'Launch a ball of fire', 40, 0),
 ('Heal', 'Restore health to an ally', 0, 50),
 ('Shield Bash', 'Stun enemy briefly', 25, 0);
 
 -- CHARACTER_HAS_SKILLS
-INSERT INTO character_has_skills (character_id, character_inventory_id, skills_id)
+INSERT INTO rpg_character_skills (character_id, skill_id)
 VALUES
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 3);
+(1, 1),
+(2, 2),
+(3, 3);
 
 -- BATTLES
-INSERT INTO battle (outcome, xp, money)
+INSERT INTO rpg_battle (outcome, xp, money, character_id)
 VALUES
-('Victory', 200, '50'),
-('Defeat', 50, '0');
-
--- CHARACTER_HAS_BATTLE
-INSERT INTO character_has_battle (character_id, character_inventory_id, battle_id)
-VALUES
-(1, 1, 1),
-(2, 2, 1),
-(3, 3, 2);
+('Victory', 200, '50', 1),
+('Defeat', 50, '0', 1);
 
 -- CHARACTER_HAS_QUEST
-INSERT INTO character_has_quest (character_id, character_inventory_id, quest_id)
+INSERT INTO rpg_character_quests (character_id, quest_id)
 VALUES
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 3);
+(1, 1),
+(2, 2),
+(3, 3);
 
 -- TRANSACTIONS
-INSERT INTO transaction (quantity, cost, user_id)
+INSERT INTO rpg_transaction (quantity, cost, user_id, item_id)
 VALUES
-('2', 100, 1),
-('1', 250, 2),
-('5', 50, 3);
+('2', 100, 1, 1),
+('1', 250, 2, 2),
+('5', 50, 3, 3);
