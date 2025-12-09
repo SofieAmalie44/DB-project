@@ -403,6 +403,180 @@ Collections:
 
 -------
 
+## Testing with MongoDB Compass
+
+1. Install Compass: https://www.mongodb.com/try/download/compass
+
+2. Connect using:
+```arduino
+mongodb://localhost:27017
+```
+
+3. Select database rpg_mongo
+
+4. Browse all migrated collections
+
+-------
+
+## SQL → Neo4j Migration Tool
+
+As an alternative to MongoDB, we also created a Neo4j graph database migrator.
+This tool copies all data from MySQL into Neo4j as nodes and relationships.
+
+### How It Works
+
+* Fetches all RPG models dynamically
+
+* Reads SQL rows using Django ORM
+
+* Connects to Neo4j using the neo4j driver
+
+* Converts:
+
+    * SQL rows → graph nodes (labeled by model name)
+
+    * Foreign keys → directed relationships
+
+    * ManyToMany → directed relationships
+
+* Creates nodes and relationships without modifying the SQL database
+
+### Location
+```swift
+rpg_backend/rpg/management/commands/migrate_to_neo4j.py
+```
+
+### Run Neo4j in Docker
+
+Start Neo4j with a custom password:
+```bash
+docker run -d \
+  --name neo4j \
+  -p 7474:7474 \
+  -p 7687:7687 \
+  -e NEO4J_AUTH=neo4j/your_password_here \
+  neo4j:5.10
+```
+
+Replace `your_password_here` with a secure password. This will be your login credentials.
+
+Inspect:
+```bash
+docker ps
+```
+
+View logs (to confirm startup):
+```bash
+docker logs neo4j
+```
+
+### Run the Migrator
+
+Set environment variables:
+```bash
+export NEO4J_URI='bolt://localhost:7687'
+export NEO4J_USER='neo4j'
+export NEO4J_PASSWORD='your_password_here'
+```
+
+Then run:
+```bash
+python manage.py migrate_to_neo4j
+```
+
+### Result
+
+Neo4j database will contain nodes for:
+
+* Character
+
+* Item
+
+* Skill
+
+* Quest
+
+* NPC
+
+* Guild
+
+* Battle
+
+* Transaction
+
+* User
+
+With relationships between them:
+
+* `Character -[:USER]-> User`
+
+* `Character -[:GUILD]-> Guild`
+
+* `Character -[:SKILLS]-> Skill` (M2M)
+
+* `Character -[:QUESTS]-> Quest` (M2M)
+
+* `Battle -[:CHARACTER]-> Character`
+
+* `Quest -[:NPC]-> NPC`
+
+* And more based on your data model
+
+-------
+
+## Accessing Neo4j Browser
+
+1. Open your browser and navigate to:
+```
+http://localhost:7474
+```
+
+2. Login with:
+   * Username: `neo4j`
+   * Password: `your_password_here` (the one you set in the Docker ENV)
+
+3. Run example queries to explore the graph:
+
+```cypher
+// View all nodes
+MATCH (n) RETURN n LIMIT 20
+
+// Find all characters and their skills
+MATCH (c:Character)-[:SKILLS]->(s:Skill) 
+RETURN c.character_name, s.name
+
+// Find character's guild
+MATCH (c:Character)-[:GUILD]->(g:Guild) 
+RETURN c.character_name, g.guild_name
+
+// View all relationship types
+MATCH ()-[r]->() 
+RETURN type(r), count(*) 
+ORDER BY count(*) DESC
+
+// Find a specific character and related data
+MATCH (c:Character {character_name: 'Aelric'})
+MATCH (c)-[r]->(related)
+RETURN c, type(r), related
+```
+
+4. Stop Neo4j when done:
+```bash
+docker stop neo4j
+```
+
+5. Restart later:
+```bash
+docker start neo4j
+```
+
+6. Remove container completely:
+```bash
+docker rm neo4j
+```
+
+-------
+
 ## Running MongoDB via Docker (Required)
 
 Start MongoDB:
@@ -451,21 +625,6 @@ MongoDB will now contain:
 * transaction
 
 -------
-
-## Testing with MongoDB Compass
-
-1. Install Compass: https://www.mongodb.com/try/download/compass
-
-2. Connect using:
-```arduino
-mongodb://localhost:27017
-```
-
-3. Select database rpg_mongo
-
-4. Browse all migrated collections
-
-------
 
 ## Installation Instructions
 1. Clone repository
