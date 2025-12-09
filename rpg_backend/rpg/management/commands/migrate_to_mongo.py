@@ -11,7 +11,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         # -------------------------------------
-        # 1. CONNECT TO MONGODB
+        # CONNECT TO MONGODB
         # -------------------------------------
         client = MongoClient("mongodb://localhost:27017/")
         db = client["rpg_mongo"]  
@@ -19,13 +19,46 @@ class Command(BaseCommand):
         self.stdout.write(self.style.NOTICE("Connected to MongoDB"))
 
         # -------------------------------------
-        # 2. FETCH ALL MODELS FROM rpg APP
+        # FETCH ALL MODELS FROM rpg APP
         # -------------------------------------
         rpg_models = apps.get_app_config("rpg").get_models()
 
         for model in rpg_models:
             model_name = model.__name__.lower()
             collection = db[model_name]
+
+            if model_name == "inventory":
+                self.stdout.write(f"Migrating (embedded): {model_name} ...")
+
+                collection.delete_many({})
+
+                rows = model.objects.all()
+                documents = []
+
+                for obj in rows:
+                    # base inventory fields
+                    doc = {
+                        "id": obj.id,
+                        "character": obj.character.id
+                    }
+
+                    # embed related InventoryItem rows
+                    embedded_items = []
+                    for ii in obj.items.all(): # reverse relationship from InventoryItem
+                        embedded_items.append({
+                            "item": ii.item.id,
+                            "quantity": ii.quantity
+                        })
+                    doc["items"] = embedded_items
+                    documents.append(doc)
+                
+                if documents:
+                    collection.insert_many(documents)
+
+                self.stdout.write(
+                    self.style.SUCCESS(f" {len(documents)} inventory migrated with embedded items")
+                )
+                continue 
 
             self.stdout.write(f"Migrating: {model_name} ...")
 
@@ -37,7 +70,7 @@ class Command(BaseCommand):
             documents = []
 
             # -------------------------------------
-            # 3. CONVERT EACH SQL ROW INTO DOCUMENT
+            # CONVERT EACH SQL ROW INTO DOCUMENT
             # -------------------------------------
             for obj in rows:
                 doc = {}
@@ -68,7 +101,7 @@ class Command(BaseCommand):
                 documents.append(doc)
 
             # -------------------------------------
-            # 4. INSERT INTO MONGODB
+            # INSERT INTO MONGODB
             # -------------------------------------
             if documents:
                 collection.insert_many(documents)
